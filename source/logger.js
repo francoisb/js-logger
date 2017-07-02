@@ -1,6 +1,35 @@
 "use strict";
-define(['require'] , function (require) {
+(function(name, dependencies, context, definition) {
 
+    // CommonJS and AMD suport
+    if (typeof context['module'] !== 'undefined' && context['module']['exports']) {
+        if (dependencies && context['require']) {
+            for (var i = 0; i < dependencies.length; i++) {
+                context[dependencies[i]] = context['require'](dependencies[i]);
+            }
+        }
+        context['module']['exports'] = definition.apply(context);
+    } else if (typeof context['define'] !== 'undefined' && context['define'] === 'function' && context['define']['amd']) {
+        define(name, (dependencies || []), definition);
+    } else {
+        if (dependencies && context['require']) {
+            for (var i = 0; i < dependencies.length; i++) {
+                dependencies[i] = context[dependencies[i]];
+            }
+        }
+        context[name] = definition.call(context, dependencies);
+    }
+
+})('js-logger', [], (this || {}), function() {
+
+    /**
+     * Helper to know if the logger have to write something.
+     *
+     * @private
+     * @param   {Boolean|Integer}   level           The writer severity level
+     * @param   {Boolean|Integer}   logSeverity     The logger severity level
+     * @returns {Boolean}
+     */
     function isWritable(level, logSeverity) {
         if (level === false) {
             return false;
