@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title>js-logger - console example</title>
+    <script src="../js-logger.min.js"></script>
+</head>
+<body>
+    <script>
+        (function(JsLogger) {
+            // Create a new logger
+            var logger = new JsLogger();
+
+            // Register a "console" writer
+            logger.registerWriter('console', function(message, options) {
+                var
+                    trace        = false,
+                    functionName = 'log';
+
+                if (options.severity >= options.logger.levels.Fatal && window.console.exception) {
+                    functionName = 'exception';
+                } else if (options.severity >= options.logger.levels.Error && window.console.error) {
+                    functionName = 'error';
+                } else if (options.severity >= options.logger.levels.Warn && window.console.warn) {
+                    functionName = 'warn';
+                } else if (options.severity >= options.logger.levels.Info && window.console.info) {
+                    functionName = 'info';
+                } else if (options.severity >= options.logger.levels.Debug && window.console.debug) {
+                    functionName = 'debug';
+                } else if (options.severity >= options.logger.levels.Trace && window.console.trace) {
+                    trace = true;
+                }
+
+                if (options.additionalData) {
+                    window.console[functionName](message, options.additionalData);
+                } else {
+                    window.console[functionName](message);
+                }
+
+                if (trace === true) {
+                    window.console.trace();
+                }
+                
+            }, logger.levels['On']); // 'On' mean that the writer will log everything
+
+            // log some stuff
+            logger.trace('This is a "trace" example!' , { prefix: 'a prefix', additionalData: { data: { foo: 'bar' } } });
+            logger.debug('This is a "debug" example!' , {});
+            logger.info('This is a "info" example!' , { prefix: 'an other prefix' });
+            logger.warn('This is a "warn" example!' , {});
+            logger.error('This is a "error" example!' , {});
+            logger.fatal('This is a "fatal" example!' , { additionalData: { data: { foo: 'bar' } } });
+
+        })(window['js-logger']);
+    </script>
+</body>
+</html>

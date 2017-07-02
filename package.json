@@ -1,0 +1,13 @@
+{
+    "name":         "js-logger",
+    "description":  "JS LOGGER deployment using Grunt.",
+    "author":       "François Béliveau",
+    "private":      true,
+    "engine":       "node >= 7.6.0",
+    "dependencies": {
+        "grunt":                    "1.0.1",
+        "grunt-contrib-clean":      "1.0.0",
+        "grunt-contrib-copy":       "1.0.0",
+        "grunt-contrib-uglify":     "2.2.0"
+    }
+}
