@@ -9,7 +9,7 @@
             }
         }
         context['module']['exports'] = definition.apply(context);
-    } else if (typeof context['define'] !== 'undefined' && context['define'] === 'function' && context['define']['amd']) {
+    } else if (typeof context['define'] === 'function' && context['define']['amd']) {
         define(name, (dependencies || []), definition);
     } else {
         if (dependencies && context['require']) {
