@@ -1,26 +1,4 @@
-"use strict";
-(function(name, dependencies, context, definition) {
-
-    // CommonJS and AMD suport
-    if (typeof context['module'] !== 'undefined' && context['module']['exports']) {
-        if (dependencies && context['require']) {
-            for (var i = 0; i < dependencies.length; i++) {
-                context[dependencies[i]] = context['require'](dependencies[i]);
-            }
-        }
-        context['module']['exports'] = definition.apply(context);
-    } else if (typeof context['define'] === 'function' && context['define']['amd']) {
-        define(name, (dependencies || []), definition);
-    } else {
-        if (dependencies && context['require']) {
-            for (var i = 0; i < dependencies.length; i++) {
-                dependencies[i] = context[dependencies[i]];
-            }
-        }
-        context[name] = definition.call(context, dependencies);
-    }
-
-})('js-logger', [], (this || {}), function() {
+module.Logger = (function() {
 
     /**
      * Helper to know if the logger have to write something.
@@ -248,4 +226,4 @@
 
 
     return Logger;
-});
+})();

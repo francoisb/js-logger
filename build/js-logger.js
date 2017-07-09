@@ -3,7 +3,8 @@
 (function(name, dependencies, context, definition) {
 
     // CommonJS and AMD suport
-    if (typeof context['module'] !== 'undefined' && context['module']['exports']) {
+    if (typeof context['module'] === 'object') {
+        // CommonJS
         if (dependencies && context['require']) {
             for (var i = 0; i < dependencies.length; i++) {
                 context[dependencies[i]] = context['require'](dependencies[i]);
@@ -11,8 +12,10 @@
         }
         context['module']['exports'] = definition.apply(context);
     } else if (typeof context['define'] === 'function' && context['define']['amd']) {
+        // AMD
         define(name, (dependencies || []), definition);
     } else {
+        // Global Variables
         if (dependencies && context['require']) {
             for (var i = 0; i < dependencies.length; i++) {
                 dependencies[i] = context[dependencies[i]];
@@ -22,6 +25,12 @@
     }
 
 })('js-logger', [], (this || {}), function() {
+
+    var module = {
+        writers: {}
+    };
+
+module.Logger = (function() {
 
     /**
      * Helper to know if the logger have to write something.
@@ -249,4 +258,49 @@
 
 
     return Logger;
+})();
+module.writers.console = (function() {
+
+    /**
+     * This writter can log something in the console.
+     *
+     * @private
+     * @param   {String}   message         The message to log
+     * @param   {Object}   options         The options to apply
+     */
+    function write(message, options) {
+        var
+            trace        = false,
+            functionName = 'log';
+
+        if (options.severity >= options.logger.levels.Fatal && window.console.exception) {
+            functionName = 'exception';
+        } else if (options.severity >= options.logger.levels.Error && window.console.error) {
+            functionName = 'error';
+        } else if (options.severity >= options.logger.levels.Warn && window.console.warn) {
+            functionName = 'warn';
+        } else if (options.severity >= options.logger.levels.Info && window.console.info) {
+            functionName = 'info';
+        } else if (options.severity >= options.logger.levels.Debug && window.console.debug) {
+            functionName = 'debug';
+        } else if (options.severity >= options.logger.levels.Trace && window.console.trace) {
+            trace = true;
+        }
+
+        if (options.additionalData) {
+            window.console[functionName](message, options.additionalData);
+        } else {
+            window.console[functionName](message);
+        }
+
+        if (trace === true) {
+            window.console.trace();
+        }
+        
+    }
+
+    return write;
+})();
+
+    return module;    
 });

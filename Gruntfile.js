@@ -10,15 +10,19 @@ module.exports = function(grunt) {
             }
         },
 
-        copy: {
+        concat: {
             build: {
-                src:     'source/logger.js',
-                dest:    'js-logger.js',
+                src:     [
+                            'source/module.header.js',
+                            'source/logger.js',
+                            'source/writers/console.js',
+                            'source/module.footer.js',
+                         ],
+                dest:    'build/js-logger.js',
                 options: {
-                    process: function (content, srcpath) {
-                        return _banner + content;
-                    },
-                },
+                             stripBanners: true,
+                             banner:       _banner,
+                         },
             }
         },
 
@@ -38,11 +42,19 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     expand: false,
-                    src:    'source/logger.js',
-                    dest:   'js-logger.min.js'
+                    src:    'build/js-logger.js',
+                    dest:   'build/js-logger.min.js'
                 }]
             }
         },
+        jasmine: {
+            src: 'build/js-logger.js',
+            options: {
+                specs:    'tests/*Spec.js',
+                template: require('grunt-template-jasmine-nml'),
+
+            }
+        }
 
     };
 
@@ -50,13 +62,18 @@ module.exports = function(grunt) {
 
     // load the tasks
     grunt.loadNpmTasks("grunt-contrib-clean");
-    grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
 
+    // define the tasks
+    grunt.registerTask('test', 'Run js-logger tests.', [
+        'jasmine'
+    ]);
     // define the tasks
     grunt.registerTask('build', 'Build js-logger.', [
         'clean:build',
-        'copy:build',
+        'concat:build',
         'uglify:build'
     ]);
 };
