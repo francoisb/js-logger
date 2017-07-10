@@ -226,4 +226,5 @@ module.Logger = (function() {
 
 
     return Logger;
+
 })();

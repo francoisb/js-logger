@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>js-logger - custom example</title>
+    <script src="../build/js-logger.min.js"></script>
+    <style type="text/css">
+        .logs {
+            color: #000000;
+            border: #000000 1px solid;
+            padding: 0.5em;
+        }
+        .logs .fatal {
+            color: #a00101;
+            font-weight: bold;
+        }
+        .logs .error {
+            color: #a00101;
+        }
+        .logs .warn {
+            color: #e0b808;
+        }
+    </style>
+</head>
+<body>
+    <h1>JS-LOGGER - custom example</h1>
+    <p>For more information please visit <a href="https://github.com/francoisb/js-logger">https://github.com/francoisb/js-logger</a></p>
+
+    <div id="log-target" class="logs"></div>
+
+    <script>
+        (function(JsLogger) {
+            // Create a new logger
+            var logger = new JsLogger();
+
+            var logsElm = document.getElementById('log-target');
+
+            // Register a custom writer to write everything "info", "warn", "error" and "fatal" logs
+            logger.registerWriter('custom', function(message, options) {
+
+                var logElm = document.createElement('p');
+
+                if (options.severity >= options.logger.levels.Fatal) {
+                    logElm.className = 'fatal';
+                } else if (options.severity >= options.logger.levels.Error && window.console.error) {
+                    logElm.className = 'error';
+                } else if (options.severity >= options.logger.levels.Warn && window.console.warn) {
+                    logElm.className = 'warn';
+                }
+
+                logElm.appendChild(document.createTextNode(message));
+
+                logsElm.appendChild(logElm);
+
+            }, logger.levels['Info']);
+
+            // log some stuff
+            logger.trace('This will not be written!' , {});
+            logger.debug('This will not be written!' , {});
+            logger.info('This will be written!' , { prefix: 'INFO' });
+            logger.warn('This will be written!' , { prefix: 'WARN' });
+            logger.error('This will be written!' , { prefix: 'ERROR' });
+            logger.fatal('This will be written!' , { prefix: 'FATAL' });
+
+        })(window['js-logger'].Logger);
+    </script>
+</body>
+</html>

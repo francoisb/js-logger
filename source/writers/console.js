@@ -39,4 +39,5 @@ module.writers.console = (function() {
     }
 
     return write;
+
 })();

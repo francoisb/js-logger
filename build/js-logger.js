@@ -258,7 +258,9 @@ module.Logger = (function() {
 
 
     return Logger;
+
 })();
+
 module.writers.console = (function() {
 
     /**
@@ -300,7 +302,9 @@ module.writers.console = (function() {
     }
 
     return write;
+
 })();
+
 
     return module;    
 });

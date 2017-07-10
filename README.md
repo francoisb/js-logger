@@ -53,6 +53,20 @@ Or you can use the log function
     logger.log(the_level, 'the_message', options);
 
 
+Available options
+------------------
+
+You can add all the options you need for your writer.
+
+### Global
+
+*prefix* : To add a prefix to your message (example: "foo" will transform your message into "[foo] the_message")
+
+### Console writer
+
+*additionalData*: To add some additional data to your log
+
+
 How to build
 ------------
 
